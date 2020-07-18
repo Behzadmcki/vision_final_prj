@@ -9,22 +9,21 @@ markerCorners, markerIds, rejectedCandidates = cv2.aruco.detectMarkers(frame, di
 arr=np.concatenate(markerCorners, axis=0 )
 
 # arr=np.array([[markerIds[0],markerIds[1],markerIds[2],markerIds[3]]])
-print(arr[1,0,0])
-for i in range (4):
-    if markerIds[i]==30:
-        p1 = markerCorners[i].mean(1).squeeze()[0], markerCorners[0].mean(1).squeeze()[1]
-    if markerIds[i]==32:
-        p2 = markerCorners[i].mean(1).squeeze()[0], markerCorners[1].mean(1).squeeze()[1]
-    if markerIds[i] == 31:
-        p3 = markerCorners[i].mean(1).squeeze()[0], markerCorners[2].mean(1).squeeze()[1]
-    if markerIds[i] == 33:
-        p4 = markerCorners[i].mean(1).squeeze()[0], markerCorners[3].mean(1).squeeze()[1]
+# print(arr[1,0,0])
+# for i in range (4):
+#     if markerIds[i]==30:
+#         p1 = markerCorners[i].mean(1).squeeze()[0], markerCorners[0].mean(1).squeeze()[1]
+#     if markerIds[i]==32:
+#         p2 = markerCorners[i].mean(1).squeeze()[0], markerCorners[1].mean(1).squeeze()[1]
+#     if markerIds[i] == 31:
+#         p3 = markerCorners[i].mean(1).squeeze()[0], markerCorners[2].mean(1).squeeze()[1]
+#     if markerIds[i] == 33:
+#         p4 = markerCorners[i].mean(1).squeeze()[0], markerCorners[3].mean(1).squeeze()[1]
 output_size = (480,320)
-points1 = np.array([p1,p2,p3,p4], dtype=np.float32)
+
 print(markerIds)
-points2 = np.array([(480,0),(0,0),(480,320),(0,320)], dtype=np.float32)
-H = cv2.getPerspectiveTransform(points1, points2)
-J = cv2.warpPerspective(frame,H,  output_size)
+
+
 for x in range(4):
     if markerIds[x]==30:
         ul=arr[x,0,0],arr[x,0,1]
@@ -35,6 +34,10 @@ for x in range(4):
     if markerIds[x]==33:
         dr=arr[x,2,0],arr[x,2,1]
 
+points1 = np.array([ur,ul,dr,dl], dtype=np.float32)
+points2 = np.array([(480,0),(0,0),(480,320),(0,320)], dtype=np.float32)
+H = cv2.getPerspectiveTransform(points1, points2)
+J = cv2.warpPerspective(frame,H,  output_size)
 
 cv2.imshow('frame', J);
 cv2.waitKey(0)
