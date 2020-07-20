@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/OTR" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/OTR/cv_algorithms" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Table-Detection-Extraction" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/vision_final_prj" vcs="Git" />
+  </component>
+</project>
