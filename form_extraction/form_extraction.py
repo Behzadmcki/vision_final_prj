@@ -6,7 +6,7 @@ from keras.preprocessing.image import load_img, img_to_array
 import arabic_reshaper
 from bidi.algorithm import get_display
 
-model = keras.models.load_model('VGG16.h5')
+model = keras.models.load_model('VGG_2.h5')
 
 
 fa_ch = [u"۰",u"۱",u"۲",u"۳",u"۴",u"۵",u"۶",u"۷",u"۸",u"۹",u"ا",u"ب",u"پ",u"ت",u"ث",u"ج",u"چ",u"ح",u"خ",u"د",u"ذ",u"ر",u"ز",u"ژ",u"س",u"ش",u"ص",u"ض",u"ط",u"ظ",u"ع",u"غ",u"ف",u"ق",u"ک",u"گ",u"ل",u"م",u"ن",u"و",u"ه",u"ی"]
