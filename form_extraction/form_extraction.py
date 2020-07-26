@@ -1,6 +1,15 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+from tensorflow import keras
+from keras.preprocessing.image import load_img, img_to_array
+import arabic_reshaper
+from bidi.algorithm import get_display
+
+model = keras.models.load_model('VGG_2.h5')
+
+
+fa_ch = [u"۰",u"۱",u"۲",u"۳",u"۴",u"۵",u"۶",u"۷",u"۸",u"۹",u"ا",u"ب",u"پ",u"ت",u"ث",u"ج",u"چ",u"ح",u"خ",u"د",u"ذ",u"ر",u"ز",u"ژ",u"س",u"ش",u"ص",u"ض",u"ط",u"ظ",u"ع",u"غ",u"ف",u"ق",u"ک",u"گ",u"ل",u"م",u"ن",u"و",u"ه",u"ی"]
 
 BS_CB = []
 MS_CB = []
@@ -10,7 +19,14 @@ ID = []
 FN = []
 LN = []
 
+ID_block = []
+FN_block = []
+LN_block = []
 
+def fa_print(fa_string):
+    reshaped_text = arabic_reshaper.reshape(fa_string)
+    bidi_text = get_display(reshaped_text)
+    print(bidi_text)
 
 
 def transform(img):
@@ -44,8 +60,8 @@ def transform(img):
     M = cv2.getPerspectiveTransform(pts1, pts2)
 
     dst = cv2.warpPerspective(img, M, (width, length))
-    plt.imshow(dst)
-    plt.show()
+    # plt.imshow(dst)
+    # plt.show()
     # cv2.imwrite("Trans_out.jpg",dst)
     return dst
 
@@ -55,28 +71,31 @@ def table_detection(img):
     img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     canny = cv2.Canny(img_gray,100,200)
-    plt.imshow(canny)
-    plt.show()
+    # plt.imshow(canny)
+    # plt.show()
 
     img_bin=canny
     contours, hierarchy = cv2.findContours(img_bin, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     bb=img.copy()
+    global ID_block
+    global FN_block
+    global LN_block
 
     for c in contours:
 
         x, y, w, h = cv2.boundingRect(c)
         if (w > 250 and 40> h >20):
             if(130<y<165):
-                ID.append(img[y+3:y + h-3, x:x + w])
+                ID_block.append(img[y+3:y + h-3, x:x + w])
                 #print("ID ok")
 
             if (170 < y < 210):
-                FN.append(img[y+3:y + h-3, x:x + w])
+                FN_block.append(img[y+3:y + h-3, x:x + w])
                 #print("FN ok")
 
             if (215 < y < 250):
-                LN.append(img[y+3:y + h-3, x:x + w])
+                LN_block.append(img[y+3:y + h-3, x:x + w])
                 #print("LN OK")
 
             bb = cv2.rectangle(bb, (x, y), (x + w, y + h), (0, 255, 0), 1)
@@ -99,91 +118,106 @@ def table_detection(img):
 
             bb = cv2.rectangle(bb, (x, y), (x + w, y + h), (255, 0, 0), 1)
 
-    plt.imshow(bb)
-    plt.show()
+    # plt.imshow(bb)
+    # plt.show()
 
 
     fig, axs = plt.subplots(4, 8)
     fig.suptitle('form Output')
 
 
-
-    #
-    ID1 = ID[0][:, 0:int(ID[0].shape[1] / 8)]
+    ID1 = ID_block[0][:, 0:int(ID_block[0].shape[1] / 8)]
+    cv2.imwrite("ID1.png",ID1)
     axs[0, 0].imshow(ID1)
+    #print(clf(ID1))
 
 
-    ID2 = ID[0][:, int(ID[0].shape[1] / 8):2 * int(ID[0].shape[1] / 8)]
+    ID2 = ID_block[0][:, int(ID_block[0].shape[1] / 8): 2* int(ID_block[0].shape[1] / 8)]
+    cv2.imwrite("ID2.png", ID2)
     axs[0, 1].imshow(ID2)
 
-    ID3 = ID[0][:, 2*int(ID[0].shape[1] / 8): 3* int(ID[0].shape[1] / 8)]
+    ID3 = ID_block[0][:, 2*int(ID_block[0].shape[1] / 8): 3* int(ID_block[0].shape[1] / 8)]
+    cv2.imwrite("ID3.png", ID3)
     axs[0, 2].imshow(ID3)
 
-    ID4 = ID[0][:, 3*int(ID[0].shape[1] / 8): 4* int(ID[0].shape[1] / 8)]
+    ID4 = ID_block[0][:, 3*int(ID_block[0].shape[1] / 8): 4* int(ID_block[0].shape[1] / 8)]
+    cv2.imwrite("ID4.png", ID4)
     axs[0, 3].imshow(ID4)
 
-    ID5 = ID[0][:, 4*int(ID[0].shape[1] / 8): 5* int(ID[0].shape[1] / 8)]
+    ID5 = ID_block[0][:, 4*int(ID_block[0].shape[1] / 8): 5* int(ID_block[0].shape[1] / 8)]
+    cv2.imwrite("ID5.png", ID5)
     axs[0, 4].imshow(ID5)
 
-    ID6 = ID[0][:, 5*int(ID[0].shape[1] / 8): 6* int(ID[0].shape[1] / 8)]
+    ID6 = ID_block[0][:, 5*int(ID_block[0].shape[1] / 8): 6* int(ID_block[0].shape[1] / 8)]
+    cv2.imwrite("ID6.png", ID6)
     axs[0, 5].imshow(ID6)
 
-    ID7 = ID[0][:, 6*int(ID[0].shape[1] / 8): 7* int(ID[0].shape[1] / 8)]
+    ID7 = ID_block[0][:, 6*int(ID_block[0].shape[1] / 8): 7* int(ID_block[0].shape[1] / 8)]
+    cv2.imwrite("ID7.png", ID7)
     axs[0, 6].imshow(ID7)
 
-    ID8 = ID[0][:, 7*int(ID[0].shape[1] / 8): 8* int(ID[0].shape[1] / 8)]
+    ID8 = ID_block[0][:, 7*int(ID_block[0].shape[1] / 8): 8* int(ID_block[0].shape[1] / 8)]
+    cv2.imwrite("ID8.png", ID8)
     axs[0, 7].imshow(ID8)
 
+    global ID
+    ID = [ID1,ID2,ID2,ID3,ID4,ID5,ID6,ID7,ID8]
 
 
-    FN1 = FN[0][:, 0:int(FN[0].shape[1] / 8)]
+    FN1 = FN_block[0][:, 0:int(FN_block[0].shape[1] / 8)]
     axs[1, 0].imshow(FN1)
 
-    FN2 = FN[0][:, int(FN[0].shape[1] / 8):2 * int(FN[0].shape[1] / 8)]
+    FN2 = FN_block[0][:, int(FN_block[0].shape[1] / 8):2 * int(FN_block[0].shape[1] / 8)]
     axs[1, 1].imshow(FN2)
 
-    FN3 = FN[0][:, 2 * int(FN[0].shape[1] / 8): 3 * int(FN[0].shape[1] / 8)]
+    FN3 = FN_block[0][:, 2 * int(FN_block[0].shape[1] / 8): 3 * int(FN_block[0].shape[1] / 8)]
     axs[1, 2].imshow(FN3)
 
-    FN4 = FN[0][:, 3 * int(FN[0].shape[1] / 8): 4 * int(FN[0].shape[1] / 8)]
+    FN4 = FN_block[0][:, 3 * int(FN_block[0].shape[1] / 8): 4 * int(FN_block[0].shape[1] / 8)]
     axs[1, 3].imshow(FN4)
 
-    FN5 = FN[0][:, 4 * int(FN[0].shape[1] / 8): 5 * int(FN[0].shape[1] / 8)]
+    FN5 = FN_block[0][:, 4 * int(FN_block[0].shape[1] / 8): 5 * int(FN_block[0].shape[1] / 8)]
     axs[1, 4].imshow(FN5)
 
-    FN6 = FN[0][:, 5 * int(FN[0].shape[1] / 8): 6 * int(FN[0].shape[1] / 8)]
+    FN6 = FN_block[0][:, 5 * int(FN_block[0].shape[1] / 8): 6 * int(FN_block[0].shape[1] / 8)]
     axs[1, 5].imshow(FN6)
 
-    FN7 = FN[0][:, 6 * int(FN[0].shape[1] / 8): 7 * int(FN[0].shape[1] / 8)]
+    FN7 = FN_block[0][:, 6 * int(FN_block[0].shape[1] / 8): 7 * int(FN_block[0].shape[1] / 8)]
     axs[1, 6].imshow(FN7)
 
-    FN8 = FN[0][:, 7 * int(FN[0].shape[1] / 8): 8 * int(FN[0].shape[1] / 8)]
+    FN8 = FN_block[0][:, 7 * int(FN_block[0].shape[1] / 8): 8 * int(FN_block[0].shape[1] / 8)]
     axs[1, 7].imshow(FN8)
 
+    global FN
+    FN = [FN1,FN2,FN3,FN4,FN5,FN6,FN7,FN8]
 
-    LN1 = LN[0][:, 0:int(LN[0].shape[1] / 8)]
+
+    LN1 = LN_block[0][:, 0:int(LN_block[0].shape[1] / 8)]
     axs[2, 0].imshow(LN1)
 
-    LN2 = LN[0][:, int(LN[0].shape[1] / 8):2 * int(LN[0].shape[1] / 8)]
+    LN2 = LN_block[0][:, int(LN_block[0].shape[1] / 8):2 * int(LN_block[0].shape[1] / 8)]
     axs[2, 1].imshow(LN2)
 
-    LN3 = LN[0][:, 2 * int(LN[0].shape[1] / 8): 3 * int(LN[0].shape[1] / 8)]
+    LN3 = LN_block[0][:, 2 * int(LN_block[0].shape[1] / 8): 3 * int(LN_block[0].shape[1] / 8)]
     axs[2, 2].imshow(LN3)
 
-    LN4 = LN[0][:, 3 * int(LN[0].shape[1] / 8): 4 * int(LN[0].shape[1] / 8)]
+    LN4 = LN_block[0][:, 3 * int(LN_block[0].shape[1] / 8): 4 * int(LN_block[0].shape[1] / 8)]
     axs[2, 3].imshow(LN4)
 
-    LN5 = LN[0][:, 4 * int(LN[0].shape[1] / 8): 5 * int(LN[0].shape[1] / 8)]
+    LN5 = LN_block[0][:, 4 * int(LN_block[0].shape[1] / 8): 5 * int(LN_block[0].shape[1] / 8)]
     axs[2, 4].imshow(LN5)
 
-    LN6 = LN[0][:, 5 * int(LN[0].shape[1] / 8): 6 * int(LN[0].shape[1] / 8)]
+    LN6 = LN_block[0][:, 5 * int(LN_block[0].shape[1] / 8): 6 * int(LN_block[0].shape[1] / 8)]
     axs[2, 5].imshow(LN6)
 
-    LN7 = LN[0][:, 6 * int(LN[0].shape[1] / 8): 7 * int(LN[0].shape[1] / 8)]
+    LN7 = LN_block[0][:, 6 * int(LN_block[0].shape[1] / 8): 7 * int(LN_block[0].shape[1] / 8)]
     axs[2, 6].imshow(LN7)
 
-    LN8 = LN[0][:, 7 * int(LN[0].shape[1] / 8): 8 * int(LN[0].shape[1] / 8)]
+    LN8 = LN_block[0][:, 7 * int(LN_block[0].shape[1] / 8): 8 * int(LN_block[0].shape[1] / 8)]
     axs[2, 7].imshow(LN8)
+
+    global LN
+    LN = [LN1,LN2,LN3,LN4,LN5,LN6,LN7,LN8]
 
     axs[3,2].imshow(BS_CB[0])
 
@@ -219,7 +253,43 @@ def checkbox(img):
     # plt.imshow(th1)
     # plt.show()
 
+def n_clf(img):
+    #img = load_img(imgname, target_size=(28, 28), grayscale=True)
+    #img = cv2.imread(imgname,0)
+    img =cv2.cvtColor(img , cv2.COLOR_BGR2GRAY)
+    img = cv2.resize(img,(28,28))
+    #plt.imshow(img)
+    #plt.show()
+    #cv2.imshow("clf",img)
+    image = img_to_array(img) / 255.
+    # orig_img = image.copy()
+    image = np.expand_dims(image, 0)
+    predictions = model.predict(image)[0]
+    label = np.argmax(predictions)
+    #proba = np.max(predictions)
+    # print(label)
+    if label > 9:
+        label =1;
+    return label
 
+def c_clf(img):
+    #img = load_img(imgname, target_size=(28, 28), grayscale=True)
+    #img = cv2.imread(imgname,0)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    img = cv2.resize(img,(28,28))
+    #plt.imshow(img)
+    #plt.show()
+    #cv2.imshow("clf",img)
+    image = img_to_array(img) / 255.
+    # orig_img = image.copy()
+    image = np.expand_dims(image, 0)
+    predictions = model.predict(image)[0]
+    label = np.argmax(predictions)
+    #proba = np.max(predictions)
+    # print(label)
+    if label < 9:
+        label =41
+    return label
 
 if __name__ == "__main__":
 
@@ -231,12 +301,35 @@ if __name__ == "__main__":
 
     table_detection(dst)
 
+    print("\n\n\n")
+
+    I_D = ""
+    for i in ID:
+        I_D += fa_ch[n_clf(i)]
+    fa_print(I_D)
+
+    F_N = ""
+    for l in FN:
+        F_N += fa_ch[c_clf(l)]
+    fa_print(F_N)
+
+    L_N = ""
+    for j in LN:
+        L_N += fa_ch[c_clf(j)]
+    fa_print(L_N)
+
+
+
+    BS_string = u"کارشناسی"
+    MS_string = u"کارشناسی ارشد"
+    PHD_string = u"دکتری"
+
     if(checkbox(BS_CB[0])):
-        print("he has a BS degree")
+        fa_print(BS_string)
     if(checkbox(MS_CB[0])):
-        print("he has a MS degree")
+        fa_print(MS_string)
     if(checkbox(PHD_CB[0])):
-        print("he has a PHD degree")
+        fa_print(PHD_string)
 
 
 
