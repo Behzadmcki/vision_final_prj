@@ -1,11 +1,12 @@
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 #from tensorflow import keras
 from keras.preprocessing.image import load_img, img_to_array
 from keras.models import load_model
 import arabic_reshaper
 from bidi.algorithm import get_display
+import time
 
 model = load_model('BatchNorm_87.h5')
 
@@ -78,7 +79,7 @@ def table_detection(img):
     img_bin=canny
     contours, hierarchy = cv2.findContours(img_bin, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-    bb=img.copy()
+    # bb=img.copy()
     global ID_block
     global FN_block
     global LN_block
@@ -99,7 +100,7 @@ def table_detection(img):
                 LN_block.append(img[y+3:y + h-3, x:x + w])
                 #print("LN OK")
 
-            bb = cv2.rectangle(bb, (x, y), (x + w, y + h), (0, 255, 0), 1)
+            # bb = cv2.rectangle(bb, (x, y), (x + w, y + h), (0, 255, 0), 1)
 
 
 
@@ -107,7 +108,7 @@ def table_detection(img):
             if(20<x<100):
                 PHD_CB.append(img[y:y + h, x:x + w])
                 # print("PHD ok")
-                cv2.imwrite("PHD.png",PHD_CB[0])
+                # cv2.imwrite("PHD.png",PHD_CB[0])
             elif(100<x<200):
                 MS_CB.append(img[y:y + h, x:x + w])
                 # print("Ms ok")
@@ -115,122 +116,104 @@ def table_detection(img):
             elif(220<x<350):
                 BS_CB.append(img[y:y + h, x:x + w])
                 # print("Bs ok")
-                cv2.imwrite("BS.png", BS_CB[0])
+                # cv2.imwrite("BS.png", BS_CB[0])
 
-            bb = cv2.rectangle(bb, (x, y), (x + w, y + h), (255, 0, 0), 1)
+            # bb = cv2.rectangle(bb, (x, y), (x + w, y + h), (255, 0, 0), 1)
 
     # plt.imshow(bb)
     # plt.show()
 
 
-    fig, axs = plt.subplots(4, 8)
-    fig.suptitle('form Output')
+    # fig, axs = plt.subplots(4, 8)
+    # fig.suptitle('form Output')
 
 
     ID1 = ID_block[0][:, 0:int(ID_block[0].shape[1] / 8)]
-    #cv2.imwrite("ID1.png",ID1)
-    axs[0, 0].imshow(ID1)
-    #print(clf(ID1))
-
-
     ID2 = ID_block[0][:, int(ID_block[0].shape[1] / 8): 2* int(ID_block[0].shape[1] / 8)]
-    #cv2.imwrite("ID2.png", ID2)
-    axs[0, 1].imshow(ID2)
-
     ID3 = ID_block[0][:, 2*int(ID_block[0].shape[1] / 8): 3* int(ID_block[0].shape[1] / 8)]
-    #cv2.imwrite("ID3.png", ID3)
-    axs[0, 2].imshow(ID3)
-
     ID4 = ID_block[0][:, 3*int(ID_block[0].shape[1] / 8): 4* int(ID_block[0].shape[1] / 8)]
-    #cv2.imwrite("ID4.png", ID4)
-    axs[0, 3].imshow(ID4)
-
     ID5 = ID_block[0][:, 4*int(ID_block[0].shape[1] / 8): 5* int(ID_block[0].shape[1] / 8)]
-    #cv2.imwrite("ID5.png", ID5)
-    axs[0, 4].imshow(ID5)
-
     ID6 = ID_block[0][:, 5*int(ID_block[0].shape[1] / 8): 6* int(ID_block[0].shape[1] / 8)]
-    #cv2.imwrite("ID6.png", ID6)
-    axs[0, 5].imshow(ID6)
-
     ID7 = ID_block[0][:, 6*int(ID_block[0].shape[1] / 8): 7* int(ID_block[0].shape[1] / 8)]
-    #cv2.imwrite("ID7.png", ID7)
-    axs[0, 6].imshow(ID7)
-
     ID8 = ID_block[0][:, 7*int(ID_block[0].shape[1] / 8): 8* int(ID_block[0].shape[1] / 8)]
+
+    # cv2.imwrite("ID1.png",ID1)
+    # cv2.imwrite("ID2.png", ID2)
+    # cv2.imwrite("ID3.png", ID3)
+    # cv2.imwrite("ID4.png", ID4)
+    # cv2.imwrite("ID5.png", ID5)
+    # cv2.imwrite("ID6.png", ID6)
+    # cv2.imwrite("ID7.png", ID7)
     #cv2.imwrite("ID8.png", ID8)
-    axs[0, 7].imshow(ID8)
+
+
+    # axs[0, 0].imshow(ID1)
+    # axs[0, 1].imshow(ID2)
+    # axs[0, 2].imshow(ID3)
+    # axs[0, 3].imshow(ID4)
+    # axs[0, 4].imshow(ID5)
+    # axs[0, 7].imshow(ID8)
+    # axs[0, 5].imshow(ID6)
+    # axs[0, 6].imshow(ID7)
+
 
     global ID
     ID = [ID1,ID2,ID2,ID3,ID4,ID5,ID6,ID7,ID8]
 
 
     FN1 = FN_block[0][:, 0:int(FN_block[0].shape[1] / 8)]
-    axs[1, 0].imshow(FN1)
-
     FN2 = FN_block[0][:, int(FN_block[0].shape[1] / 8):2 * int(FN_block[0].shape[1] / 8)]
-    axs[1, 1].imshow(FN2)
-
     FN3 = FN_block[0][:, 2 * int(FN_block[0].shape[1] / 8): 3 * int(FN_block[0].shape[1] / 8)]
-    axs[1, 2].imshow(FN3)
-
     FN4 = FN_block[0][:, 3 * int(FN_block[0].shape[1] / 8): 4 * int(FN_block[0].shape[1] / 8)]
-    axs[1, 3].imshow(FN4)
-
     FN5 = FN_block[0][:, 4 * int(FN_block[0].shape[1] / 8): 5 * int(FN_block[0].shape[1] / 8)]
-    axs[1, 4].imshow(FN5)
-
     FN6 = FN_block[0][:, 5 * int(FN_block[0].shape[1] / 8): 6 * int(FN_block[0].shape[1] / 8)]
-    axs[1, 5].imshow(FN6)
-
     FN7 = FN_block[0][:, 6 * int(FN_block[0].shape[1] / 8): 7 * int(FN_block[0].shape[1] / 8)]
-    axs[1, 6].imshow(FN7)
-
     FN8 = FN_block[0][:, 7 * int(FN_block[0].shape[1] / 8): 8 * int(FN_block[0].shape[1] / 8)]
-    axs[1, 7].imshow(FN8)
+
+    # axs[1, 0].imshow(FN1)
+    # axs[1, 1].imshow(FN2)
+    # axs[1, 2].imshow(FN3)
+    # axs[1, 3].imshow(FN4)
+    # axs[1, 4].imshow(FN5)
+    # axs[1, 5].imshow(FN6)
+    # axs[1, 6].imshow(FN7)
+    # axs[1, 7].imshow(FN8)
 
     global FN
     FN = [FN1,FN2,FN3,FN4,FN5,FN6,FN7,FN8]
 
 
     LN1 = LN_block[0][:, 0:int(LN_block[0].shape[1] / 8)]
-    axs[2, 0].imshow(LN1)
-
     LN2 = LN_block[0][:, int(LN_block[0].shape[1] / 8):2 * int(LN_block[0].shape[1] / 8)]
-    axs[2, 1].imshow(LN2)
-
     LN3 = LN_block[0][:, 2 * int(LN_block[0].shape[1] / 8): 3 * int(LN_block[0].shape[1] / 8)]
-    axs[2, 2].imshow(LN3)
-
     LN4 = LN_block[0][:, 3 * int(LN_block[0].shape[1] / 8): 4 * int(LN_block[0].shape[1] / 8)]
-    axs[2, 3].imshow(LN4)
-
     LN5 = LN_block[0][:, 4 * int(LN_block[0].shape[1] / 8): 5 * int(LN_block[0].shape[1] / 8)]
-    axs[2, 4].imshow(LN5)
-
     LN6 = LN_block[0][:, 5 * int(LN_block[0].shape[1] / 8): 6 * int(LN_block[0].shape[1] / 8)]
-    axs[2, 5].imshow(LN6)
-
     LN7 = LN_block[0][:, 6 * int(LN_block[0].shape[1] / 8): 7 * int(LN_block[0].shape[1] / 8)]
-    axs[2, 6].imshow(LN7)
-
     LN8 = LN_block[0][:, 7 * int(LN_block[0].shape[1] / 8): 8 * int(LN_block[0].shape[1] / 8)]
-    axs[2, 7].imshow(LN8)
+
+
+    # axs[2, 0].imshow(LN1)
+    # axs[2, 1].imshow(LN2)
+    # axs[2, 2].imshow(LN3)
+    # axs[2, 3].imshow(LN4)
+    # axs[2, 4].imshow(LN5)
+    # axs[2, 5].imshow(LN6)
+    # axs[2, 6].imshow(LN7)
+    # axs[2, 7].imshow(LN8)
 
     global LN
     LN = [LN1,LN2,LN3,LN4,LN5,LN6,LN7,LN8]
 
-    axs[3,2].imshow(BS_CB[0])
-
-    axs[3, 1].imshow(MS_CB[0])
-
-    axs[3, 0].imshow(PHD_CB[0])
-
-    ax = plt.gca()
-    ax.axes.xaxis.set_ticklabels([])
-    ax.axes.yaxis.set_ticklabels([])
-
-    plt.show()
+    # axs[3,2].imshow(BS_CB[0])
+    # axs[3, 1].imshow(MS_CB[0])
+    # axs[3, 0].imshow(PHD_CB[0])
+    #
+    # ax = plt.gca()
+    # ax.axes.xaxis.set_ticklabels([])
+    # ax.axes.yaxis.set_ticklabels([])
+    #
+    # plt.show()
 
 def checkbox(img):
     img=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
@@ -295,6 +278,8 @@ def c_clf(img):
 if __name__ == "__main__":
 
     addr = "examples/1.jpg"
+
+    run_s = time.time()
     img = cv2.imread(addr)
 
     dst = transform(img)
@@ -337,9 +322,10 @@ if __name__ == "__main__":
     if(checkbox(PHD_CB[0])):
         fa_print(PHD_string)
 
+    run_f=time.time()
+    run_t=run_f-run_s
+    print("run time :", run_t)
 
 
 
 
-    cv2.waitKey()
-    cv2.destroyAllWindows()
