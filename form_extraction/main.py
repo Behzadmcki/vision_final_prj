@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 #from tensorflow import keras
 from keras.preprocessing.image import load_img, img_to_array
 from keras.models import load_model
@@ -8,7 +8,7 @@ import arabic_reshaper
 from bidi.algorithm import get_display
 import time
 
-model = load_model('BatchNorm_87.h5')
+model = load_model('BatchNorm_85.h5')
 
 
 fa_ch = [u"۰",u"۱",u"۲",u"۳",u"۴",u"۵",u"۶",u"۷",u"۸",u"۹",u"ا",u"ب",u"پ",u"ت",u"ث",u"ج",u"چ",u"ح",u"خ",u"د",u"ذ",u"ر",u"ز",u"ژ",u"س",u"ش",u"ص",u"ض",u"ط",u"ظ",u"ع",u"غ",u"ف",u"ق",u"ک",u"گ",u"ل",u"م",u"ن",u"و",u"ه",u"ی",u" "]
@@ -277,13 +277,19 @@ def c_clf(img):
 
 if __name__ == "__main__":
 
-    addr = "examples/4.jpg"
+    addr = "examples/From (19).jpg"
 
     run_s = time.time()
 
+
     img = cv2.imread(addr)
 
+
     dst = transform(img)
+
+
+    # plt.imshow(dst)
+    # plt.show()
 
 
     table_detection(dst)
@@ -298,10 +304,10 @@ if __name__ == "__main__":
     F_N = ""
     for l in FN:
         F_N += fa_ch[c_clf(l)]
-
     F_N = F_N[1:]
     F_N = F_N[::-1]
     fa_print(F_N)
+
 
     L_N = ""
     for j in LN:

@@ -58,7 +58,7 @@ def table_detection(img):
     img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     #extract edges with canny edge detector
-    canny = cv2.Canny(img_gray,100,200)
+    canny = cv2.Canny(img_gray,80,200)
     plt.imshow(canny)
     plt.show()
 
@@ -243,7 +243,7 @@ def table_detection(img):
 
 if __name__ == "__main__":
 
-    addr = "com "
+    addr = "examples/From (1).jpg"
 
     img = cv2.imread(addr)
 
