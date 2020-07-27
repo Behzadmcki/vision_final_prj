@@ -277,9 +277,10 @@ def c_clf(img):
 
 if __name__ == "__main__":
 
-    addr = "examples/1.jpg"
+    addr = "examples/4.jpg"
 
     run_s = time.time()
+
     img = cv2.imread(addr)
 
     dst = transform(img)
@@ -321,6 +322,7 @@ if __name__ == "__main__":
         fa_print(MS_string)
     if(checkbox(PHD_CB[0])):
         fa_print(PHD_string)
+
 
     run_f=time.time()
     run_t=run_f-run_s

@@ -14,7 +14,7 @@ tx = 10
 ty = 10
 index=0
 dsize=(28,28)
-fnames = glob.glob("/home/joker/computerVision/final_project/Final project dataset/*")
+fnames = glob.glob("~/PycharmProjects/vision_final_prj/dataset/*")
 
 for file in fnames:
     path = file

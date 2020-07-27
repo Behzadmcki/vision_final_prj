@@ -243,7 +243,7 @@ def table_detection(img):
 
 if __name__ == "__main__":
 
-    addr = "examples/1.jpg"
+    addr = "com "
 
     img = cv2.imread(addr)
 
